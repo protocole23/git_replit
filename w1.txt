@@ -1,0 +1,267 @@
+shell | 셀
+- 리눅스 커널과 사용자를 연결해주는 인터페이스
+- 사용자의 입력 읽고, 해석하고, 프로그램 실행함
+- "셀 스크립트" : 일련의 명령행을 한 파일에 담아놓은
+- 리눅스 운영체제의 표준인   bash (bourne again shell)
+
+문법
+<프로그램명> <내용>
+ echo : 셀 명령, 내장명령, 프로그램
+ - 화면에 출력하는 명령
+
+ - 변수수를 내용에 넣을 수 있다.
+  - 스페이스 주의할 것
+  - ""는 사용해도 되고 스페이스 없으면 없어도 됨
+  - 변수를 사용할 떄에는\$ 기호 사용한다
+  - 내장된 변수도 존재한다. 이것들은 대문자로 지정되어 있다.
+
+- 명령의 특징
+  -한 프로그램이 한 가지 일만 한다.
+  - 명령의 조합을 잘 해야 한다.
+
+- 명령
+ - 프로그램 자체
+ - 단순명령 :  프로그램 + 내용
+ - 결합 명령 : 프로그램 + 옵션 + 내용
+  - 프로그램을 구체화하는 역할
+  - '-h'
+  - 명령 인자
+
+
+  
+  - "ls -l"  조회
+  - change directory (cd)
+
+- 파이프
+ - |
+ - 명령행 | 명령행
+ - less
+ - 이전 명령해의 출력값을 다음 명령행의 입력값으로 보내는 역할
+ 'echo $PATH | less'
+
+- wc, head, cut, grep, sort, uniq (여기 관련 퀴즈)
+
+- 입력
+  - stdin: 표준입력
+  - 프롬프트를 통해서 입력되는 입력스트림
+
+
+- 출력
+  - stout: 표준출력
+  - 출력 스트림
+
+ls -l /bin
+
+1. wc
+- 파일 내용의 줄 수 , 단어 수, 문자 수 출력하는 명령
+
+- wc로 이 파일의 내용 출력하기 wc w1.txt
+- 지금 디렉터리의 하위 디렉터리 내용의 줄수, 단어수, 문자수 를 출력하라 ls -l /bin | wc
+
+- 명령인자
+  -w
+  -l
+  -c
+
+ex2. txt 단어 몇 글자인지 세어보자. wc -w w1.txt
+ex3. /bin 파일+디렉터리의 개수 몇개인지 ls -l /bin | wc -l
+
+2. head
+- 파일의 n째줄까지 내용을 확인해 출력하는 명령
+-n :
+  head -n3
+  (default=10)
+-파일이 90줄 -n100
+
+ex1. 이 파일의 1번째 줄 단어 수,글자 수 세기 head w1.txt -n1 | wc -wc
+ex2. /bin 파일 중에서 앞에 5개만 출력하기 ls /bin | head -n5
+
+3. cut
+- 파일의 내용 중에서 특정 열만 출력하는 명령
+- 범위 지정 방범:
+  - \t : -f
+  James \t 34
+  f1       f2
+
+  cut -f1 name.txt
+
+- 3, 5, 6
+ cut -f3, 5, 6
+- 4-5
+ cut -f4-5
+
+# animals 3번째 필드 조회 cut -f3 animals.txt
+# animals 1번째 필드 조회하는데 1번째 줄만 출력하기 cut -f1 animals.txt | head -n1
+
+-c : character
+-c5
+-c-5
+-c1,5,6
+
+# animals.txt 1필드의 1번째 단어의 마지막 글자 출력하기
+=> 마지막 가져오기는 음수 인덱스로 접근하지 않는다.
+  - rev 명령을 사용하자.
+
+  - cut animals.txt -f1 | rev |cut -c1
+
+-d<구분자>
+  -d,
+
+# animals.txt. 4번째 필드:Lutz, Mark에서
+  Lutz만 출력하기(모든 last name만 가져오기)
+  cut -f4 animals.txt | cut -d, -f1
+
+--------------------------
+
+4. grep
+- matching
+- 대소문자 구분함
+- 라인 전체를 출력한다
+Q. The가 있는 txt파일을 전체 조회하라: *
+- -v : 조건 문자열이 없는 라인 출력
+
+Q. /usr/lib에 포함된 하위 디럭터리 개수 알아내기
+ls -l /usr/lib | cut -c1 | grep d | wc -l
+
+5. sort
+- 정렬, 오름차순 (abcd...)
+- -r(reversed)
+- 숫자 정렬 (-n)
+  sort -n -4 sample.txt
+  sort -nr sample.txt
+Q1. animals.txt 3번째 필드가 숫자 => 오름차순 정렬해서 출력하자.
+cut -f3 animals.txt | sort -n
+Q2. 최소 최댓값 
+최소 : cut -f3 animals.txt |sort -n |head -n1 
+최대 : cut -f3 animals.txt | sort -nr | head -n1
+Q3. /etc/passwd 디렉터리에서 사용자 이름 정렬하여 추출하기
+head /etc/passwd | cut -d: -f1 | sort
+- :로 구분된 필드 중 1번째 == 사용자
+- 전체 출력하기 ( # https://man7.org/linux/man-pages/man1/head.1.html)
+cut -d: -f1 /etc/passwd | sort
+head /etc/passwd | cut -d: -f1 | sort -n100
+Q4. 사용자 중 root가 있는지 확인하기(존재하는 라인만 출력)head /etc/passwd | cut -d: -f1 | grep root
+| grep root
+- Root, root, ROOT
+- root 'abcdroot'
+- _root_ => -w
+root, broot, bayroot, rootfile, ....
+" root "
+ -w
+
+Q5. ls , head
+head 썻다가 나가고 싶으면 ctrl + c( 강종 )
+
+# letters 내용 조회하기
+6. uniq
+- 중복된 문자열을 제거해서 보여주되, 인접한 중복 문자열만
+
+Q. 성적표(grades 파일)에서 가장 빈번하지 않은 등급부터 출력하기.
+uniq -c grades | sort -nr| head -n1
+AAACCCBBBAAA
+ * sort -> uniq
+ AAAAAABBBCCC->ABC
+ * uniq -> sort
+ ACBA -> AABC
+
+->sort -n
+1 C
+2 A
+ => sort
+1 C
+
+* -d
+-f
+- rev c1
+-c9
+------------------
+#1. 버전 관리
+- 파일의 변화를 시간에 따라 저장했다가 나중에 특정 시점의 버전으로 다시 꺼내올 수 있는 시스템
+- 협업
+- 틀 : 깃
+
+#2. 깃
+- 데이터 저장 방식  : 스냅샷
+- 오프라인
+  - if 빈 -> 텍스트 입력 -> 빈 파일
+  -키(key)-벨류(value)
+    - 키는 고유하다. (해시)
+    - 벨류(텍스트)
+- 깃 상태
+  - 수정: 파일이 변경된 상태
+  - 커밋: 저장
+  - 스테이지: 스냅샷 찍어서 커밋할 준비가 된 상태
+
+  - 수정
+  - 스테이징 -> 커밋
+
+- 깃 커밋 순서:
+  상태 체크 -> (수정) -> 스 테이징 -> 커밋
+  ....
+
+1) 버전 체크
+git --version
+  *git -v --version
+  ls -l
+  ls --list(x)
+
+2) 사용자 정보 설정하기
+- name
+- email
+- 옵션: --global: 전체 시스템에 영향을 준다.
+  - 프로젝트마다 다른 이름을 사용하고 싶을 경우는 옵션을 제외함
+
+- core.editor
+  -vi 빠져나올 때는:q + enter
+  - git help <프로그램명>
+
+# 디렉터리 (directory)
+- 현재 디렉터리 : working directory, current directory
+- 우리가 말하는 "폴더"
+- 트리구조를 가진
+  animals/
+    ㄴ name.txt
+    ㄴ age.txt
+    mammals/
+      ㄴ cow.txt
+
+- 하위 디렉터리 (child) - animals > mammals
+name.txt -> 파일
+- 상위 디렉터리(parent) - mammals > animals
+- 형제 디렉터리 (sibling) - mammals, reptile
+
+- /로 구분함
+  animals/mammals/cow.txt
+  <디렉터리 / .... / 파일명>
+- / : 루트 디렉터리
+
+- 절대경로: 루트에서부터 시작
+- 상대경로: 현재 기준
+  - 나의 현재위치가 mammals이다. 근데 위로 가고싶다.
+    1) 절대경로 : / .... / mammals
+    2) 상대경로: ..
+  -cd : change directory
+
+    예: cd ./mammals
+      cd ..
+
+- pwd, cd
+- .. .
+- mkdir(경로 새로만들기)
+
+Q. new_dir로 이동해서 디렉터리 "dir2"만들어보기
+cd dir2
+
+3) 깃 초기화
+  git init: .git에 모든 변경사항(스냅샷)이 저장이 된다.
+
+4) 상태 체크
+  git status
+
+  깃이 모르는 파일일 경우
+  untracked -> 'add' -> tracked
+
+  add -> comit
+
+  [main(root-comm(t) f37df1e)] init commit
+ㅣ
