@@ -1,0 +1,10 @@
+#!/bin/bash
+
+echo hello world # 주석 달기
+echo "$#" (o)
+echo '$#' (x)
+
+name="$1"
+echo $name $2 $3
+
+echo $*

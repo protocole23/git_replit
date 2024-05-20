@@ -90,7 +90,60 @@ ls -l /etc | grep -w conf
 - 디렉토리 경로, 파일명
 
 6. 변수 평가
+- "평가" - 변수를 리터럴 값으로 치환하여 값을 평가함
 $VAR - 이미 지정된 변수
 $var - 사용자가 지정하는 변수
   ls $var 
-    -> ../
+    ->var=./notes/w1.txt
+  ls .notes/w1.txt
+
+- $HOME - 루트 디렉터리
+- $USER - 사용자명
+
+- echo
+- printenv
+
+- 변수 설정하기
+  name=lee
+  - 공백 없어야 함
+  - 공백이 있으면 프로그램으로 인식
+  -변수=값
+  - 변수를 사용하려면 앞에 "$변수명"
+
+Q. age라는 변수에 자신의 나이를 담고 "내 나이는 ...살이다" 변수를 이용해서 출력.
+$age=20
+echo My age is $age
+
+-dir1=$HOME/notes/chapter1/
+$dir1
+- cd $dir1
+
+7. 패턴과 변수
+mammals
+  ㄴ lizard.txt
+  ㄴ snake.txt
+  ㄴ ....txt
+reptiles
+
+mv <from> <to>
+# 변수에 담아서 이동시키려면
+dir1=mammals/*.txt
+mv $dir1 reptiles
+
+dir2="lizard.txt snake.txt"
+mv $dir2 reptiles
+# 패턴매칭으로 이동시키려면?
+mv mammals/*.txt reptiles
+
+8. alias
+- 단축어를 별명으로 설정하기
+- alias uniqc="uniq -c"
+uniqc | ...
+- removeall="rm -r"
+
+- shadowing
+  alias grep="grep Linux *.txt"
+  alias ls="ls -l"
+
+- alias
+  - unalias uniqc
