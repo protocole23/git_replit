@@ -1,5 +1,6 @@
 { pkgs }: {
   deps = [
+    pkgs.gut
     pkgs.vim
     pkgs.ed
     pkgs.q
