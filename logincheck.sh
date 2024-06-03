@@ -1,17 +1,15 @@
-$user
+$user=$1
 if [ $# -ne 1 ] then
   echo "인수 개수가 1개가 아닙니다"
   exit 1
 fi
 
-logincheck() {
-  while true; do
-    if who | grep -q "^$user "; then
-      echo "$user 로그인함!"
-      break
-    fi
 
+
+until  who | grep -w "$user"; do
     sleep 60
-  done
-}
+done
+
+echo "$user 로그인함!"
+
   
