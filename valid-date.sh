@@ -82,4 +82,4 @@ elif (( day < 1 || day > valid_days )); then
     exit 1
 fi
 
-echo "$month $day $year"
+echo "$month $day $year" 
